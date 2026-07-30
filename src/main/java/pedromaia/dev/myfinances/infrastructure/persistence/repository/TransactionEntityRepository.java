@@ -1,8 +1,9 @@
 package pedromaia.dev.myfinances.infrastructure.persistence.repository;
 
-import dio.budgeting.domain.Category;
-import dio.budgeting.infrastructure.persistence.entity.TransactionEntity;
+
 import org.springframework.data.repository.CrudRepository;
+import pedromaia.dev.myfinances.domain.Category;
+import pedromaia.dev.myfinances.infrastructure.persistence.entity.TransactionEntity;
 
 import java.util.List;
 import java.util.UUID;

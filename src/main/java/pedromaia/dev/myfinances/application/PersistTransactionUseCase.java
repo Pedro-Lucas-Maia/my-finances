@@ -1,11 +1,12 @@
 package pedromaia.dev.myfinances.application;
 
-import dio.budgeting.application.input.PersistTransactionInput;
-import dio.budgeting.application.output.TransactionOutput;
-import dio.budgeting.domain.Transaction;
-import dio.budgeting.domain.TransactionRepository;
+
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.stereotype.Service;
+import pedromaia.dev.myfinances.application.input.PersistTransactionInput;
+import pedromaia.dev.myfinances.application.output.TransactionOutput;
+import pedromaia.dev.myfinances.domain.Transaction;
+import pedromaia.dev.myfinances.domain.TransactionRepository;
 
 @Service
 public class PersistTransactionUseCase {

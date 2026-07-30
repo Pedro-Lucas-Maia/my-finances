@@ -1,6 +1,7 @@
 package pedromaia.dev.myfinances.application.output;
 
-import dio.budgeting.domain.Transaction;
+
+import pedromaia.dev.myfinances.domain.Transaction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

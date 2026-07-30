@@ -1,8 +1,5 @@
 package pedromaia.dev.myfinances.infrastructure.persistence.entity;
 
-import dio.budgeting.domain.Category;
-import dio.budgeting.domain.Transaction;
-import dio.budgeting.domain.TransactionId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,6 +7,9 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pedromaia.dev.myfinances.domain.Category;
+import pedromaia.dev.myfinances.domain.Transaction;
+import pedromaia.dev.myfinances.domain.TransactionId;
 
 import java.util.UUID;
 

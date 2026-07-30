@@ -1,11 +1,12 @@
 package pedromaia.dev.myfinances.application;
 
-import dio.budgeting.application.output.TransactionOutput;
-import dio.budgeting.domain.Category;
-import dio.budgeting.domain.TransactionRepository;
+
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;
+import pedromaia.dev.myfinances.application.output.TransactionOutput;
+import pedromaia.dev.myfinances.domain.Category;
+import pedromaia.dev.myfinances.domain.TransactionRepository;
 
 import java.util.List;
 

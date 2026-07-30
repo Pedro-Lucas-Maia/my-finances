@@ -1,10 +1,5 @@
 package pedromaia.dev.myfinances.infrastructure.http;
 
-import dio.budgeting.application.ListTransactionsByCategoryUseCase;
-import dio.budgeting.application.PersistTransactionUseCase;
-import dio.budgeting.domain.Category;
-import dio.budgeting.infrastructure.http.request.TransactionRequest;
-import dio.budgeting.infrastructure.http.response.TransactionResponse;
 import org.springframework.ai.audio.transcription.TranscriptionModel;
 import org.springframework.ai.audio.tts.TextToSpeechModel;
 import org.springframework.ai.chat.client.ChatClient;
@@ -14,6 +9,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pedromaia.dev.myfinances.application.ListTransactionsByCategoryUseCase;
+import pedromaia.dev.myfinances.application.PersistTransactionUseCase;
+import pedromaia.dev.myfinances.domain.Category;
+import pedromaia.dev.myfinances.infrastructure.http.request.TransactionRequest;
+import pedromaia.dev.myfinances.infrastructure.http.response.TransactionResponse;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

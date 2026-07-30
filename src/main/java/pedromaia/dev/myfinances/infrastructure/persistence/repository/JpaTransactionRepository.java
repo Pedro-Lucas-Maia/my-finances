@@ -1,10 +1,11 @@
 package pedromaia.dev.myfinances.infrastructure.persistence.repository;
 
-import dio.budgeting.domain.Category;
-import dio.budgeting.domain.Transaction;
-import dio.budgeting.domain.TransactionRepository;
-import dio.budgeting.infrastructure.persistence.entity.TransactionEntity;
+
 import org.springframework.stereotype.Repository;
+import pedromaia.dev.myfinances.domain.Category;
+import pedromaia.dev.myfinances.domain.Transaction;
+import pedromaia.dev.myfinances.domain.TransactionRepository;
+import pedromaia.dev.myfinances.infrastructure.persistence.entity.TransactionEntity;
 
 import java.util.List;
 
