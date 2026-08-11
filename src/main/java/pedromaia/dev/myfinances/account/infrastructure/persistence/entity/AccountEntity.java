@@ -28,7 +28,6 @@ public class AccountEntity {
     private String name;
     private BigDecimal balance;
 
-    //TODO: change categoryId at the migration file to add account categoryId table and foreign key
     @Column(name = "category_id")
     private UUID categoryId;
 
