@@ -1,6 +1,8 @@
 package pedromaia.dev.myfinances.bank.domain;
 
-public class BankAlreadyExistsException extends RuntimeException {
+import pedromaia.dev.myfinances.common.domain.exceptions.AlreadyExistsException;
+
+public class BankAlreadyExistsException extends AlreadyExistsException {
     public BankAlreadyExistsException(String message) {
         super(message);
     }

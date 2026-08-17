@@ -1,6 +1,8 @@
 package pedromaia.dev.myfinances.bank.domain;
 
-public class BankNotFoundException extends RuntimeException {
+import pedromaia.dev.myfinances.common.domain.exceptions.NotFoundException;
+
+public class BankNotFoundException extends NotFoundException {
     public BankNotFoundException(String message) {
         super(message);
     }
