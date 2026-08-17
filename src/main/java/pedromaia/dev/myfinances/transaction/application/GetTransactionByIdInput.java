@@ -1,4 +1,4 @@
-package pedromaia.dev.myfinances.transaction.application.input;
+package pedromaia.dev.myfinances.transaction.application;
 
 import org.hibernate.validator.constraints.UUID;
 

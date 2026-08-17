@@ -1,6 +1,7 @@
 package pedromaia.dev.myfinances.transaction.infrastructure.persistence.repository;
 
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import pedromaia.dev.myfinances.transaction.domain.Transaction;
 import pedromaia.dev.myfinances.transaction.domain.TransactionRepository;
@@ -31,8 +32,8 @@ public class JpaTransactionRepository implements TransactionRepository {
     }
 
     @Override
-    public List<Transaction> findAll() {
-        return transactionEntityRepository.findAll()
+    public List<Transaction> findAll(Specification<TransactionEntity> spec) {
+        return transactionEntityRepository.findAll(spec)
                 .stream()
                 .map(TransactionEntity::toDomain)
                 .toList();
@@ -45,7 +46,7 @@ public class JpaTransactionRepository implements TransactionRepository {
 
     @Override
     public List<Transaction> findAllByCategoryId(String categoryId) {
-        return transactionEntityRepository.findAllByCategoryId(categoryId)
+        return transactionEntityRepository.findAllByCategoryId(UUID.fromString(categoryId))
                 .stream()
                 .map(TransactionEntity::toDomain)
                 .toList();
