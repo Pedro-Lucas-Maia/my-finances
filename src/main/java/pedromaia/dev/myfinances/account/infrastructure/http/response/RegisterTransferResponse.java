@@ -1,5 +1,6 @@
 package pedromaia.dev.myfinances.account.infrastructure.http.response;
 
+import org.jspecify.annotations.NonNull;
 import pedromaia.dev.myfinances.account.application.operations.RegisterTransferOutput;
 
 import java.math.BigDecimal;
@@ -24,7 +25,7 @@ public record RegisterTransferResponse(
     public record AccountSender(String accountSenderId, String name, BigDecimal balance) {
     }
 
-    public static RegisterTransferResponse from(RegisterTransferOutput output) {
+    public static RegisterTransferResponse from(@NonNull RegisterTransferOutput output) {
         return new RegisterTransferResponse(
                 output.transactionId(),
                 output.description(),

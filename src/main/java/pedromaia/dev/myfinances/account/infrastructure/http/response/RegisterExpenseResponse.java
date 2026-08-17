@@ -1,5 +1,6 @@
 package pedromaia.dev.myfinances.account.infrastructure.http.response;
 
+import org.jspecify.annotations.NonNull;
 import pedromaia.dev.myfinances.account.application.operations.RegisterExpenseOutput;
 
 import java.math.BigDecimal;
@@ -17,7 +18,7 @@ public record RegisterExpenseResponse(
     public record Category(String categoryId, String name) {}
     public record AccountSender(String accountId, String name, BigDecimal balance) {}
 
-    public static RegisterExpenseResponse from(RegisterExpenseOutput output) {
+    public static RegisterExpenseResponse from(@NonNull RegisterExpenseOutput output) {
         return new RegisterExpenseResponse(
                 output.transactionId(),
                 output.description(),

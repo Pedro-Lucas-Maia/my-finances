@@ -2,10 +2,11 @@ package pedromaia.dev.myfinances.account.application.operations;
 
 import jakarta.transaction.Transactional;
 import org.jspecify.annotations.NonNull;
+import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.stereotype.Service;
 import pedromaia.dev.myfinances.account.application.ports.TransactionManagerPort;
-import pedromaia.dev.myfinances.account.domain.AccountNotFoundException;
 import pedromaia.dev.myfinances.account.domain.AccountRepository;
+import pedromaia.dev.myfinances.account.domain.exception.AccountNotFoundException;
 
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ public class RegisterIncomeUseCase {
     }
 
     @Transactional
+    @Tool(description = "Registra uma receita/ganho", name = "registerIncomeTool")
     public RegisterIncomeOutput execute(@NonNull RegisterIncomeInput input) {
         var accountReceiver = accountRepository.findById(UUID.fromString(input.accountReceiverId()))
                 .orElseThrow(() -> new AccountNotFoundException("Account with the id " + input.accountReceiverId() + " not found"));

@@ -1,5 +1,6 @@
 package pedromaia.dev.myfinances.account.application.operations;
 
+import org.jspecify.annotations.NonNull;
 import pedromaia.dev.myfinances.account.application.ports.TransactionReceipt;
 import pedromaia.dev.myfinances.account.domain.Account;
 
@@ -20,7 +21,7 @@ public record RegisterTransferOutput(
     public record AccountReceiver(String accountReceiverId, String name, BigDecimal balance) {}
     public record AccountSender(String accountSenderId, String name, BigDecimal balance) {}
 
-    public static RegisterTransferOutput from(TransactionReceipt transaction, Account accountReceiver, Account accountSender) {
+    public static RegisterTransferOutput from(@NonNull TransactionReceipt transaction, @NonNull Account accountReceiver, @NonNull Account accountSender) {
         return new RegisterTransferOutput(
                 transaction.transactionId(),
                 transaction.description(),
