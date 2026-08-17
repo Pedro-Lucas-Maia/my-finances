@@ -1,5 +1,6 @@
 package pedromaia.dev.myfinances.account.infrastructure.http;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pedromaia.dev.myfinances.account.application.operations.RegisterExpenseUseCase;
@@ -27,21 +28,21 @@ public class AccountOperationsController {
 
     @PostMapping("/income")
     @ResponseStatus(HttpStatus.CREATED)
-    public RegisterIncomeResponse registerIncome(@PathVariable String accountId, @RequestBody RegisterIncomeRequest request) {
+    public RegisterIncomeResponse registerIncome(@PathVariable @Valid String accountId, @RequestBody @Valid RegisterIncomeRequest request) {
         var output = incomeUseCase.execute(RegisterIncomeRequest.toInput(accountId, request));
         return RegisterIncomeResponse.from(output);
     }
 
     @PostMapping("/expense")
     @ResponseStatus(HttpStatus.CREATED)
-    public RegisterExpenseResponse registerExpense(@PathVariable String accountId, @RequestBody RegisterExpenseRequest request) {
+    public RegisterExpenseResponse registerExpense(@PathVariable @Valid String accountId, @RequestBody @Valid RegisterExpenseRequest request) {
         var output = expenseUseCase.execute(RegisterExpenseRequest.toInput(accountId, request));
         return RegisterExpenseResponse.from(output);
     }
 
     @PostMapping("/transfer")
     @ResponseStatus(HttpStatus.CREATED)
-    public RegisterTransferResponse registerTransfer(@PathVariable String accountId, @RequestBody RegisterTransferRequest request) {
+    public RegisterTransferResponse registerTransfer(@PathVariable @Valid String accountId, @RequestBody @Valid RegisterTransferRequest request) {
         var output = transferUseCase.execute(RegisterTransferRequest.toInput(accountId, request));
         return RegisterTransferResponse.from(output);
     }

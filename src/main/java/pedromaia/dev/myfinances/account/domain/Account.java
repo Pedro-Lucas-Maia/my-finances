@@ -2,6 +2,9 @@ package pedromaia.dev.myfinances.account.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.jspecify.annotations.NonNull;
+import pedromaia.dev.myfinances.account.domain.exception.AmountNotValidException;
+import pedromaia.dev.myfinances.account.domain.exception.BalanceNotEnoughException;
 import pedromaia.dev.myfinances.bank.domain.BankId;
 
 import java.math.BigDecimal;
@@ -31,13 +34,19 @@ public class Account {
 
     public Account registerExpense(BigDecimal amount) {
         checkAmount(amount);
+        checkBalance(amount);
         this.balance = this.balance.subtract(amount);
         return this;
     }
 
-    private void checkAmount(BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.valueOf(0)) <= 0) {
+    private void checkAmount(@NonNull BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new AmountNotValidException("amount must be positive");
+        }
+    }
+    private void checkBalance(@NonNull BigDecimal amount) {
+        if (this.balance.subtract(amount).compareTo(BigDecimal.ZERO) < 0) {
+            throw new BalanceNotEnoughException("Balance is not enough for this operation");
         }
     }
 }
