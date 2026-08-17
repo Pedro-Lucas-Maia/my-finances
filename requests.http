@@ -1,0 +1,10 @@
+### Testando o envio do Áudio para a IA
+POST http://localhost:8080/ai
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="exemplo3.mp3"
+Content-Type: audio/mpeg
+
+< prompts/exemplo3.mp3
+--WebAppBoundary--
