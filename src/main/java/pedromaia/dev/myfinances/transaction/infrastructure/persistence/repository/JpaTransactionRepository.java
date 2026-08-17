@@ -40,11 +40,6 @@ public class JpaTransactionRepository implements TransactionRepository {
     }
 
     @Override
-    public void deleteById(UUID uuid) {
-        transactionEntityRepository.deleteById(uuid);
-    }
-
-    @Override
     public List<Transaction> findAllByCategoryId(String categoryId) {
         return transactionEntityRepository.findAllByCategoryId(UUID.fromString(categoryId))
                 .stream()

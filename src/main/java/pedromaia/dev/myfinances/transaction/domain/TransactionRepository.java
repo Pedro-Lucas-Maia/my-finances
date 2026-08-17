@@ -11,6 +11,5 @@ public interface TransactionRepository {
     Transaction save(Transaction transaction);
     Optional<Transaction> findById(UUID uuid);
     List<Transaction> findAll(Specification<TransactionEntity> spec);
-    void deleteById(UUID uuid);
     List<Transaction> findAllByCategoryId(String categoryId);
 }
