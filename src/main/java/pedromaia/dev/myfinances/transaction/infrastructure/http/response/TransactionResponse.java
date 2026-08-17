@@ -1,6 +1,6 @@
 package pedromaia.dev.myfinances.transaction.infrastructure.http.response;
 
-import pedromaia.dev.myfinances.transaction.application.output.TransactionOutput;
+import pedromaia.dev.myfinances.transaction.application.TransactionOutput;
 
 import java.math.BigDecimal;
 

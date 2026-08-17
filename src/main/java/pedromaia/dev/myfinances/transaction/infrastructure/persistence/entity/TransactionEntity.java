@@ -24,27 +24,27 @@ public class TransactionEntity {
     private UUID id;
     private String description;
     private BigDecimal amount;
-    private String categoryId;
+    private UUID categoryId;
 
     @Enumerated(EnumType.STRING)
     private Type type;
 
     private Timestamp date;
 
-    private String accountReceiverId;
-    private String accountSenderId;
-
-
+    @Column(name = "receivers_account_id")
+    private UUID accountReceiverId;
+    @Column(name = "payers_account_id")
+    private UUID accountSenderId;
     public static TransactionEntity from(Transaction transaction) {
         return new TransactionEntity(
                 transaction.getId().uuid(),
                 transaction.getDescription(),
                 transaction.getAmount(),
-                transaction.getCategoryId().uuid().toString(),
+                transaction.getCategoryId().uuid(),
                 transaction.getType(),
                 transaction.getDate(),
-                transaction.getAccountReceiverId().uuid().toString(),
-                transaction.getAccountSenderId().uuid().toString()
+                transaction.getAccountReceiverId() != null ? transaction.getAccountReceiverId().uuid() : null,
+                transaction.getAccountSenderId() != null ? transaction.getAccountSenderId().uuid() : null
         );
     }
 
@@ -53,11 +53,11 @@ public class TransactionEntity {
                 new TransactionId(this.id),
                 this.description,
                 this.amount,
-                new CategoryId(UUID.fromString(this.categoryId)),
+                new CategoryId(this.categoryId),
                 this.type,
                 this.date,
-                new AccountId(UUID.fromString(this.accountReceiverId)),
-                new AccountId(UUID.fromString(this.accountSenderId))
+                this.accountReceiverId != null ? new AccountId(this.accountReceiverId) : null,
+                this.accountSenderId != null ? new AccountId(this.accountSenderId) : null
         );
     }
 }

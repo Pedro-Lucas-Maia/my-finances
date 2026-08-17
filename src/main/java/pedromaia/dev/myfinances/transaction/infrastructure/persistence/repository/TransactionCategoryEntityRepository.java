@@ -9,4 +9,5 @@ import java.util.UUID;
 
 public interface TransactionCategoryEntityRepository extends CrudRepository<TransactionCategoryEntity, UUID> {
     @NonNull List<TransactionCategoryEntity> findAll();
+    boolean existsByName(String name);
 }

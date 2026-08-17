@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 import pedromaia.dev.myfinances.account.application.ports.TransactionManagerPort;
 import pedromaia.dev.myfinances.account.application.ports.TransactionReceipt;
 import pedromaia.dev.myfinances.account.domain.AccountId;
-import pedromaia.dev.myfinances.transaction.domain.CategoryNotFoundException;
 import pedromaia.dev.myfinances.transaction.domain.CategoryRepository;
 import pedromaia.dev.myfinances.transaction.domain.Transaction;
 import pedromaia.dev.myfinances.transaction.domain.TransactionRepository;
+import pedromaia.dev.myfinances.transaction.domain.exception.CategoryNotFoundException;
 
 import java.math.BigDecimal;
 import java.util.UUID;

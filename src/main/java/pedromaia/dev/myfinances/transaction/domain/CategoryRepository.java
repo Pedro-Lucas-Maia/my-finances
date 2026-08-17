@@ -8,5 +8,6 @@ public interface CategoryRepository {
     Category save(Category category);
     Optional<Category> findById(UUID uuid);
     List<Category> findAll();
-    void deleteById(UUID uuid);
+    void delete(Category category);
+    boolean existsByName(String name);
 }

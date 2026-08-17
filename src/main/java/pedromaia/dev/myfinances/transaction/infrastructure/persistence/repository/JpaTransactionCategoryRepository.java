@@ -38,7 +38,12 @@ public class JpaTransactionCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public void deleteById(UUID uuid) {
-        repository.deleteById(uuid);
+    public void delete(Category category) {
+        repository.delete(TransactionCategoryEntity.from(category));
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return repository.existsByName(name);
     }
 }
