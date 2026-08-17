@@ -39,7 +39,7 @@ public class JpaAccountRepository implements AccountRepository {
     }
 
     @Override
-    public List<Account> findByCategoryId(CategoryId categoryId) {
+    public List<Account> findAllByCategoryId(CategoryId categoryId) {
         return repository.findByCategoryId(categoryId.uuid())
                 .stream()
                 .map(AccountEntity::toDomain)

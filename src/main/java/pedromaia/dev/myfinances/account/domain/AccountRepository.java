@@ -8,7 +8,7 @@ public interface AccountRepository {
     Account save(Account account);
     Optional<Account> findById(UUID id);
     List<Account> findAll();
-    List<Account> findByCategoryId(CategoryId categoryId);
+    List<Account> findAllByCategoryId(CategoryId categoryId);
     void delete(Account account);
     boolean existsByName(String name);
 }

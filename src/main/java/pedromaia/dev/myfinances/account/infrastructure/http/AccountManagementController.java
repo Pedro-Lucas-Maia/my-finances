@@ -1,8 +1,9 @@
 package pedromaia.dev.myfinances.account.infrastructure.http;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pedromaia.dev.myfinances.account.application.management.*;
+import pedromaia.dev.myfinances.account.application.management.account.*;
 import pedromaia.dev.myfinances.account.infrastructure.http.request.CreateAccountRequest;
 import pedromaia.dev.myfinances.account.infrastructure.http.response.AccountResponse;
 
@@ -25,7 +26,7 @@ public class AccountManagementController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountResponse createAccount(@RequestBody CreateAccountRequest request) {
+    public AccountResponse createAccount(@RequestBody @Valid CreateAccountRequest request) {
         var output = createAccountUseCase.execute(CreateAccountRequest.toInput(request));
 
         return AccountResponse.from(output);
@@ -42,7 +43,7 @@ public class AccountManagementController {
 
     @GetMapping("/{accountId}")
     @ResponseStatus(HttpStatus.OK)
-    public AccountResponse getAccountById(@PathVariable String accountId) {
+    public AccountResponse getAccountById(@PathVariable @Valid String accountId) {
         var output = getAccountByIdUseCase.execute(new GetAccountByIdInput(accountId));
 
         return AccountResponse.from(output);
@@ -50,7 +51,7 @@ public class AccountManagementController {
 
     @DeleteMapping("/{accountId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAccount(@PathVariable String accountId) {
+    public void deleteAccount(@PathVariable @Valid String accountId) {
         deleteAccountUseCase.execute(new DeleteAccountInput(accountId));
     }
 
