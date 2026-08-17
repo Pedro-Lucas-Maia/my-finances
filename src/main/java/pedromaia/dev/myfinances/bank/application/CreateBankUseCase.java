@@ -1,5 +1,7 @@
 package pedromaia.dev.myfinances.bank.application;
 
+import jakarta.transaction.Transactional;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import pedromaia.dev.myfinances.bank.application.input.CreateBankInput;
 import pedromaia.dev.myfinances.bank.application.output.BankOutput;
@@ -16,7 +18,8 @@ public class CreateBankUseCase {
         this.bankRepository = bankRepository;
     }
 
-    public BankOutput execute(CreateBankInput input) {
+    @Transactional
+    public BankOutput execute(@NonNull CreateBankInput input) {
         checkBankName(input.name());
         return BankOutput.from(bankRepository.save(new Bank(input.name())));
     }

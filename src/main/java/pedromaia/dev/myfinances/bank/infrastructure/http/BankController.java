@@ -1,5 +1,6 @@
 package pedromaia.dev.myfinances.bank.infrastructure.http;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pedromaia.dev.myfinances.bank.application.CreateBankUseCase;
@@ -22,7 +23,7 @@ public class BankController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BankResponse createBank(CreateBankRequest createBankRequest) {
+    public BankResponse createBank(@Valid @RequestBody CreateBankRequest createBankRequest) {
         var bank = createBankUseCase.execute(createBankRequest.toInput());
         return BankResponse.from(bank);
     }
