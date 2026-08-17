@@ -1,11 +1,12 @@
 package pedromaia.dev.myfinances.account.infrastructure.http.response;
 
-import pedromaia.dev.myfinances.account.application.management.AccountOutput;
+import org.jspecify.annotations.NonNull;
+import pedromaia.dev.myfinances.account.application.management.account.AccountOutput;
 
 import java.math.BigDecimal;
 
 public record AccountResponse(String accountId, String name, BigDecimal balance, Category category, Bank bank) {
-    public static AccountResponse from(AccountOutput output) {
+    public static AccountResponse from(@NonNull AccountOutput output) {
         return new AccountResponse(
                 output.accountId(),
                 output.name(),

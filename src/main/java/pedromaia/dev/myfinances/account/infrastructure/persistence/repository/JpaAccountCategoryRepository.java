@@ -37,8 +37,8 @@ public class JpaAccountCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public void deleteById(CategoryId id) {
-        repository.deleteById(id.uuid());
+    public void delete(Category category) {
+        repository.delete(AccountCategoryEntity.from(category));
     }
 
     @Override
