@@ -3,10 +3,6 @@ package pedromaia.dev.myfinances.assistant.infrastructure.ai;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Description;
-import pedromaia.dev.myfinances.account.application.operations.*;
-
-import java.util.function.Function;
 
 @Configuration
 public class AssistantToolsConfig {

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
 import org.springframework.web.multipart.MultipartFile;
 import pedromaia.dev.myfinances.assistant.domain.AIException;
-import pedromaia.dev.myfinances.assistant.infrastructure.ai.AssistantTools;
 
 import java.util.Objects;
 
