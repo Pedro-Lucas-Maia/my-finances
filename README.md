@@ -26,6 +26,7 @@ Além de completar o roteiro principal proposto pelo expert, esta solução foi 
 3. **Filtros Dinâmicos Profissionais (JPA Specifications)**: A rota de `GET /transactions` foi evoluída para suportar pesquisas dinâmicas complexas utilizando a *Criteria API* e `JpaSpecificationExecutor`. Agora é possível filtrar requisições via *Query Params* como `?type=INCOME`, `?categoryId=UUID` e `?date=YYYY-MM-DD` de forma segura.
 4. **Tratamento de Exceções Globais**: Criação de `AIExceptionHandler` e exceções de domínio como `AIException` para interceptar falhas na IA e retornar um JSON formatado amigável, abandonando as antigas *stack traces* brutas de erro 500.
 5. **Mapeamento de Domínio Blindado**: Correção de bugs sensíveis de NPE (Null Pointer Exceptions) no relacionamento polimórfico entre Contas (Recebedor vs Pagador), ajustando as entidades JPA e arquivos do Flyway.
+6. **API Playground Customizado**: Substituição do clássico Swagger/OpenAPI por uma documentação interativa "Faça-você-mesmo" construída puramente em HTML/CSS/JS com estilo Neo-Brutalista. Permite o disparo de endpoints via Fetch API diretamente pelo navegador (incluindo o envio de Multipart Files e injeção do player de áudio na tela).
 
 ---
 
@@ -68,8 +69,19 @@ O Spring irá automaticamente instanciar um container do PostgreSQL baseado no a
 
 ## 🧪 Como Testar o Fluxo Principal
 
-### 1. Testando pelo HTTP Client do IntelliJ (ou Postman)
-Para testar o *Voice Assistant*, utilize requisições do tipo **Multipart Form-Data**. Grave um pequeno áudio (Ex: `teste.mp3`) falando: *"Depositei 100 reais na minha conta."*
+### 1. Testando pelo API Playground (Recomendado)
+A aplicação conta com uma interface interativa customizada para documentação e disparo de endpoints!
+Basta rodar a aplicação e acessar no seu navegador:
+👉 **`http://localhost:8080/`**
+
+Lá você encontrará todos os módulos da API (Contas, Bancos, Categorias, Transações e Assistente IA). Para testar a IA:
+1. Abra o módulo **Voice Assistant** e expanda o endpoint `POST /ai`.
+2. Selecione um arquivo `.mp3` gravado com a sua voz (ex: *"Gastei 50 reais com supermercado"*).
+3. Clique em **Execute Request**.
+4. O *Playground* renderizará um Player de Áudio nativo para você escutar a resposta da IA na hora!
+
+### 2. Testando pelo HTTP Client do IntelliJ (ou Postman)
+Para testar o *Voice Assistant* via cliente HTTP, utilize requisições do tipo **Multipart Form-Data**. Grave um pequeno áudio (Ex: `teste.mp3`) falando: *"Depositei 100 reais na minha conta."*
 
 Se for testar pelo **IntelliJ HTTP Client**, crie um arquivo `.http` e rode:
 ```http
