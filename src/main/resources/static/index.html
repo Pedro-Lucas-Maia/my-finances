@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Finances API | Playground</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --bg-panel: #0d0d0f;
+            --border-color: #222;
+            --text-main: #f0f0f0;
+            --text-muted: #888;
+            --accent: #FF4500; 
+            --accent-glow: rgba(255, 69, 0, 0.2);
+            --method-get: #00F2FE;
+            --method-post: #FF4500;
+            --method-delete: #FF0055;
+            --method-patch: #E2B714;
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            min-height: 100vh;
+            background-image: 
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: -1px -1px;
+        }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* --- LAYOUT --- */
+        .sidebar {
+            width: 340px;
+            height: 100vh;
+            position: fixed;
+            border-right: 1px solid var(--border-color);
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            margin-left: 340px;
+            padding: 80px 60px;
+            width: calc(100% - 340px);
+            max-width: 1300px;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-style: italic;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        h2 {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .title-accent { color: var(--accent); }
+        .api-desc {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-weight: 300;
+            font-size: 0.9rem;
+        }
+
+        /* --- SIDEBAR NAV --- */
+        .module-group {
+            margin-bottom: 15px;
+        }
+        .module-header {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+            padding: 10px 0;
+            cursor: pointer;
+            border-bottom: 1px dashed var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.3s;
+        }
+        .module-header:hover { color: var(--accent); }
+        .module-header::after { content: '+'; font-size: 1.2rem; }
+        .module-group.open .module-header::after { content: '-'; }
+        
+        .module-links {
+            display: none;
+            flex-direction: column;
+            padding-top: 10px;
+            padding-left: 10px;
+            border-left: 1px solid var(--border-color);
+            margin-left: 5px;
+        }
+        .module-group.open .module-links { display: flex; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        .nav-item:hover { opacity: 1; transform: translateX(5px); }
+        .nav-method {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 700;
+            width: 45px;
+        }
+        
+        /* METHODS COLORS */
+        .method-GET { color: var(--method-get); }
+        .method-POST { color: var(--method-post); }
+        .method-DELETE { color: var(--method-delete); }
+        .method-PATCH { color: var(--method-patch); }
+
+        /* --- MAIN ENDPOINT CARDS --- */
+        .module-section { margin-bottom: 80px; }
+        .module-section-title {
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .endpoint-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .endpoint-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--text-muted);
+            transition: all 0.3s;
+        }
+        .endpoint-card[data-method="GET"]::before { background: var(--method-get); }
+        .endpoint-card[data-method="POST"]::before { background: var(--method-post); }
+        .endpoint-card[data-method="DELETE"]::before { background: var(--method-delete); }
+        .endpoint-card[data-method="PATCH"]::before { background: var(--method-patch); }
+
+        .endpoint-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-color: #444;
+        }
+
+        .endpoint-header {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+
+        .method-badge {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            width: 60px;
+        }
+        
+        .path-text {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            color: #ccc;
+        }
+
+        .endpoint-body {
+            padding: 25px;
+            display: none;
+        }
+        .endpoint-card.expanded .endpoint-body { display: block; }
+
+        .desc-text {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        /* --- FORMS & INPUTS --- */
+        .param-group { margin-bottom: 20px; }
+        .param-label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+        .param-label span.req { color: var(--accent); font-size: 0.7rem; margin-left: 10px; }
+        .param-label span.opt { color: #555; font-size: 0.7rem; margin-left: 10px; }
+        
+        input, textarea {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 12px 15px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        textarea { height: 120px; resize: vertical; }
+
+        /* --- BUTTONS --- */
+        button.execute-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 12px 30px;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        button.execute-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: var(--accent);
+            z-index: -1;
+            transition: all 0.3s;
+        }
+        button.execute-btn:hover { color: #000; }
+        button.execute-btn:hover::after { left: 0; }
+
+        /* --- RESPONSE AREA --- */
+        .response-container {
+            margin-top: 30px;
+            border: 1px solid var(--border-color);
+            background: #000;
+            display: none;
+        }
+        .response-header {
+            padding: 10px 15px;
+            border-bottom: 1px dashed var(--border-color);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .status-badge { padding: 2px 8px; border-radius: 10px; }
+        .status-2xx { background: rgba(0, 242, 254, 0.1); color: var(--method-get); }
+        .status-4xx, .status-5xx { background: rgba(255, 69, 0, 0.1); color: var(--accent); }
+        
+        pre {
+            padding: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #a9dc76; /* Hacker green */
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 400px;
+        }
+
+        .audio-player { width: 100%; margin-top: 15px; outline: none; }
+        audio::-webkit-media-controls-panel { background-color: #222; }
+        audio::-webkit-media-controls-play-button,
+        audio::-webkit-media-controls-mute-button { filter: invert(1); }
+        audio::-webkit-media-controls-current-time-display,
+        audio::-webkit-media-controls-time-remaining-display { color: #fff; }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h1>My Finances<span class="title-accent">.</span></h1>
+        <p class="api-desc">API Interativa v1.0.0<br>Documentação Gerada Por IA</p>
+        <div id="nav-container"></div>
+    </aside>
+
+    <main class="main-content">
+        <h2>System <span class="title-accent">Playground</span></h2>
+        <div id="modules-container"></div>
+    </main>
+
+    <script>
+        const API_BASE = "http://localhost:8080";
+
+        // API Definitions Grouped By Module
+        const modules = [
+            {
+                name: "Voice Assistant",
+                endpoints: [
+                    { id: "ai", method: "POST", path: "/ai", title: "Process Audio Command", desc: "Envie um áudio (.mp3) com o comando financeiro e receba resposta sintetizada.", params: [{ name: "file", in: "formData", type: "file", req: true, contract: "file: Audio/MP3" }], produces: "audio" }
+                ]
+            },
+            {
+                name: "Banks",
+                endpoints: [
+                    { id: "bank-create", method: "POST", path: "/bank", title: "Create Bank", desc: "Cadastra um novo banco.", params: [{ name: "body", in: "body", type: "json", req: true, contract: "name: String", default: '{\n  "name": "Sicoob"\n}' }] },
+                    { id: "bank-list", method: "GET", path: "/bank", title: "List Banks", desc: "Lista todas as instituições cadastradas.", params: [] }
+                ]
+            },
+            {
+                name: "Accounts Management",
+                endpoints: [
+                    { id: "acc-create", method: "POST", path: "/accounts", title: "Create Account", desc: "Cria uma nova conta vinculada a um banco e uma categoria.", params: [{ name: "body", in: "body", type: "json", req: true, contract: "name: String<br>balance: Number<br>bankId: UUID (vindo de Banks)<br>categoryId: UUID (vindo de Account Categories)", default: '{\n  "name": "Minha Conta Nubank",\n  "balance": 1500.00,\n  "bankId": "33333333-3333-3333-3333-333333333333",\n  "categoryId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"\n}' }] },
+                    { id: "acc-list", method: "GET", path: "/accounts", title: "List Accounts", desc: "Lista todas as contas.", params: [] },
+                    { id: "acc-get", method: "GET", path: "/accounts/{accountId}", title: "Get Account", desc: "Busca detalhes de uma conta específica.", params: [{ name: "accountId", in: "path", type: "string", req: true, contract: "accountId: UUID" }] },
+                    { id: "acc-del", method: "DELETE", path: "/accounts/{accountId}", title: "Delete Account", desc: "Remove uma conta financeira.", params: [{ name: "accountId", in: "path", type: "string", req: true, contract: "accountId: UUID" }] }
+                ]
+            },
+            {
+                name: "Account Operations",
+                endpoints: [
+                    { id: "op-income", method: "POST", path: "/accounts/{accountId}/income", title: "Register Income", desc: "Adiciona saldo na conta via receita.", params: [{ name: "accountId", in: "path", type: "string", req: true, contract: "accountId: UUID" }, { name: "body", in: "body", type: "json", req: true, contract: "description: String<br>amount: Number<br>categoryId: UUID (vindo de Transaction Categories)", default: '{\n  "description": "Salário Mensal",\n  "amount": 5000.00,\n  "categoryId": "10000000-0000-0000-0000-000000000007"\n}' }] },
+                    { id: "op-expense", method: "POST", path: "/accounts/{accountId}/expense", title: "Register Expense", desc: "Deduz saldo da conta via despesa.", params: [{ name: "accountId", in: "path", type: "string", req: true, contract: "accountId: UUID" }, { name: "body", in: "body", type: "json", req: true, contract: "description: String<br>amount: Number<br>categoryId: UUID (vindo de Transaction Categories)", default: '{\n  "description": "Compra no Mercado",\n  "amount": 350.00,\n  "categoryId": "10000000-0000-0000-0000-000000000001"\n}' }] },
+                    { id: "op-transfer", method: "POST", path: "/accounts/{accountId}/transfer", title: "Register Transfer", desc: "Transfere saldo de uma conta para outra.", params: [{ name: "accountId", in: "path", type: "string", req: true, contract: "accountId: UUID (Conta Remetente)" }, { name: "body", in: "body", type: "json", req: true, contract: "description: String<br>amount: Number<br>categoryId: UUID (vindo de Transaction Categories)<br>receiverId: UUID (Conta Recebedora)", default: '{\n  "description": "Transferência Aluguel",\n  "amount": 1200.00,\n  "categoryId": "10000000-0000-0000-0000-000000000006",\n  "receiverId": "COLOQUE-UUID-RECEBEDOR"\n}' }] }
+                ]
+            },
+            {
+                name: "Account Categories",
+                endpoints: [
+                    { id: "acc-cat-create", method: "POST", path: "/accounts/categories", title: "Create Category", desc: "Cria categoria de conta.", params: [{ name: "body", in: "body", type: "json", req: true, contract: "name: String", default: '{\n  "name": "Conta Poupança"\n}' }] },
+                    { id: "acc-cat-list", method: "GET", path: "/accounts/categories", title: "List Categories", desc: "Lista categorias de contas.", params: [] },
+                    { id: "acc-cat-get", method: "GET", path: "/accounts/categories/{categoryId}", title: "Get Category", desc: "Busca categoria específica.", params: [{ name: "categoryId", in: "path", type: "string", req: true, contract: "categoryId: UUID" }] },
+                    { id: "acc-cat-patch", method: "PATCH", path: "/accounts/categories/{categoryId}", title: "Update Category", desc: "Atualiza categoria de conta.", params: [{ name: "categoryId", in: "path", type: "string", req: true, contract: "categoryId: UUID" }, { name: "body", in: "body", type: "json", req: true, contract: "name: String (opcional)", default: '{\n  "name": "Nova Conta Poupança"\n}' }] },
+                    { id: "acc-cat-del", method: "DELETE", path: "/accounts/categories/{categoryId}", title: "Delete Category", desc: "Deleta categoria de conta.", params: [{ name: "categoryId", in: "path", type: "string", req: true, contract: "categoryId: UUID" }] }
+                ]
+            },
+            {
+                name: "Transactions",
+                endpoints: [
+                    { id: "tx-list", method: "GET", path: "/transactions", title: "List Transactions", desc: "Busca transações com filtros.", params: [{ name: "categoryId", in: "query", type: "string", req: false, contract: "categoryId: UUID (opcional)" }, { name: "type", in: "query", type: "string", req: false, contract: "type: String (INCOME | EXPENSE | TRANSFER)" }, { name: "date", in: "query", type: "string", req: false, contract: "date: String (Formato ISO YYYY-MM-DD)" }] },
+                    { id: "tx-get", method: "GET", path: "/transactions/{transactionId}", title: "Get Transaction", desc: "Busca transação pelo ID.", params: [{ name: "transactionId", in: "path", type: "string", req: true, contract: "transactionId: UUID" }] }
+                ]
+            },
+            {
+                name: "Transaction Categories",
+                endpoints: [
+                    { id: "tx-cat-create", method: "POST", path: "/transactions/categories", title: "Create TX Category", desc: "Cria categoria de transação.", params: [{ name: "body", in: "body", type: "json", req: true, contract: "name: String", default: '{\n  "name": "Assinaturas e Serviços"\n}' }] },
+                    { id: "tx-cat-list", method: "GET", path: "/transactions/categories", title: "List TX Categories", desc: "Lista categorias de transações.", params: [] },
+                    { id: "tx-cat-get", method: "GET", path: "/transactions/categories/{categoryId}", title: "Get TX Category", desc: "Busca categoria de transação.", params: [{ name: "categoryId", in: "path", type: "string", req: true, contract: "categoryId: UUID" }] },
+                    { id: "tx-cat-patch", method: "PATCH", path: "/transactions/categories/{categoryId}", title: "Update TX Category", desc: "Atualiza categoria de transação.", params: [{ name: "categoryId", in: "path", type: "string", req: true, contract: "categoryId: UUID" }, { name: "body", in: "body", type: "json", req: true, contract: "name: String (opcional)", default: '{\n  "name": "Supermercado e Feira"\n}' }] },
+                    { id: "tx-cat-del", method: "DELETE", path: "/transactions/categories/{categoryId}", title: "Delete TX Category", desc: "Deleta categoria de transação.", params: [{ name: "categoryId", in: "path", type: "string", req: true, contract: "categoryId: UUID" }] }
+                ]
+            }
+        ];
+
+        function init() {
+            const nav = document.getElementById('nav-container');
+            const main = document.getElementById('modules-container');
+
+            modules.forEach((mod, modIdx) => {
+                // Sidebar Module Group
+                const group = document.createElement('div');
+                group.className = 'module-group';
+                
+                const modHeader = document.createElement('div');
+                modHeader.className = 'module-header';
+                modHeader.innerText = mod.name;
+                modHeader.onclick = () => group.classList.toggle('open');
+                group.appendChild(modHeader);
+
+                const links = document.createElement('div');
+                links.className = 'module-links';
+
+                // Main Section
+                const section = document.createElement('div');
+                section.className = 'module-section';
+                section.innerHTML = `<div class="module-section-title">// ${mod.name}</div>`;
+
+                mod.endpoints.forEach(ep => {
+                    // Nav Link
+                    const navItem = document.createElement('div');
+                    navItem.className = 'nav-item';
+                    navItem.innerHTML = `<span class="nav-method method-${ep.method}">${ep.method}</span> <span>${ep.path}</span>`;
+                    navItem.onclick = () => {
+                        document.getElementById(`card-${ep.id}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        const card = document.getElementById(`card-${ep.id}`);
+                        if(!card.classList.contains('expanded')) card.classList.add('expanded');
+                    };
+                    links.appendChild(navItem);
+
+                    // Card
+                    const card = document.createElement('div');
+                    card.className = `endpoint-card`;
+                    card.id = `card-${ep.id}`;
+                    card.setAttribute('data-method', ep.method);
+
+                    let paramsHTML = '';
+                    ep.params.forEach(p => {
+                        let inputHtml = '';
+                        if (p.type === 'file') {
+                            inputHtml = `<input type="file" id="input-${ep.id}-${p.name}">`;
+                        } else if (p.type === 'json') {
+                            inputHtml = `<textarea id="input-${ep.id}-${p.name}">${p.default || ''}</textarea>`;
+                        } else {
+                            inputHtml = `<input type="text" id="input-${ep.id}-${p.name}" placeholder="e.g. ${p.name}">`;
+                        }
+
+                        let contractHtml = '';
+                        if (p.contract) {
+                            contractHtml = `<div style="font-family: var(--font-mono); font-size: 0.75rem; color: #a9dc76; background: rgba(169, 220, 118, 0.1); padding: 5px 10px; margin-bottom: 8px; border-left: 2px solid #a9dc76;">${p.contract}</div>`;
+                        }
+
+                        paramsHTML += `
+                            <div class="param-group">
+                                <label class="param-label">${p.name} <span class="${p.req ? 'req' : 'opt'}">${p.req ? 'REQUIRED' : 'OPTIONAL'}</span> (${p.in})</label>
+                                ${contractHtml}
+                                ${inputHtml}
+                            </div>
+                        `;
+                    });
+
+                    card.innerHTML = `
+                        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('expanded')">
+                            <span class="method-badge method-${ep.method}">${ep.method}</span>
+                            <span class="path-text">${ep.path}</span>
+                        </div>
+                        <div class="endpoint-body">
+                            <p class="desc-text">${ep.title} — ${ep.desc}</p>
+                            ${paramsHTML}
+                            <button class="execute-btn" onclick="executeReq('${ep.id}', '${ep.method}', '${ep.path}', ${ep.produces === 'audio'})">Execute Request</button>
+                            
+                            <div class="response-container" id="res-container-${ep.id}">
+                                <div class="response-header">
+                                    <span>RESPONSE STATUS</span>
+                                    <span class="status-badge" id="res-status-${ep.id}"></span>
+                                </div>
+                                <pre id="res-body-${ep.id}"></pre>
+                                <div id="res-audio-${ep.id}"></div>
+                            </div>
+                        </div>
+                    `;
+                    section.appendChild(card);
+                });
+
+                group.appendChild(links);
+                nav.appendChild(group);
+                main.appendChild(section);
+                
+                // Open first module by default
+                if(modIdx === 0) group.classList.add('open');
+            });
+        }
+
+        async function executeReq(epId, method, path, isAudio) {
+            const ep = modules.flatMap(m => m.endpoints).find(e => e.id === epId);
+            const resContainer = document.getElementById(`res-container-${epId}`);
+            const resStatus = document.getElementById(`res-status-${epId}`);
+            const resBody = document.getElementById(`res-body-${epId}`);
+            const resAudio = document.getElementById(`res-audio-${epId}`);
+            
+            resContainer.style.display = 'block';
+            resBody.innerText = "Executing request...";
+            resStatus.innerText = "WAITING";
+            resStatus.className = "status-badge";
+            resAudio.innerHTML = '';
+
+            let finalUrl = API_BASE + path;
+            let options = { method: method, headers: {} };
+            let queryParams = [];
+
+            try {
+                // Parse params dynamically based on config
+                if (ep.params.some(p => p.in === 'formData')) {
+                    const formData = new FormData();
+                    ep.params.filter(p => p.in === 'formData').forEach(p => {
+                        const f = document.getElementById(`input-${epId}-${p.name}`);
+                        if (f.files.length > 0) formData.append(p.name, f.files[0]);
+                    });
+                    options.body = formData;
+                } else if (ep.params.some(p => p.in === 'body')) {
+                    const b = ep.params.find(p => p.in === 'body');
+                    options.body = document.getElementById(`input-${epId}-${b.name}`).value;
+                    options.headers['Content-Type'] = 'application/json';
+                }
+
+                ep.params.filter(p => p.in === 'path').forEach(p => {
+                    const val = document.getElementById(`input-${epId}-${p.name}`).value;
+                    finalUrl = finalUrl.replace(`{${p.name}}`, encodeURIComponent(val));
+                });
+
+                ep.params.filter(p => p.in === 'query').forEach(p => {
+                    const val = document.getElementById(`input-${epId}-${p.name}`).value;
+                    if (val) queryParams.push(`${p.name}=${encodeURIComponent(val)}`);
+                });
+
+                if (queryParams.length > 0) finalUrl += '?' + queryParams.join('&');
+
+                // Execute Fetch
+                const response = await fetch(finalUrl, options);
+                
+                resStatus.innerText = `${response.status} ${response.statusText}`;
+                resStatus.className = `status-badge ${response.ok ? 'status-2xx' : 'status-4xx'}`;
+
+                if (isAudio && response.ok) {
+                    const blob = await response.blob();
+                    resBody.innerText = "Audio Blob Received Successfully! 👇";
+                    resAudio.innerHTML = `<audio controls class="audio-player" src="${URL.createObjectURL(blob)}"></audio>`;
+                } else {
+                    const text = await response.text();
+                    try {
+                        resBody.innerText = JSON.stringify(JSON.parse(text), null, 2);
+                    } catch {
+                        resBody.innerText = text;
+                    }
+                }
+            } catch (err) {
+                resStatus.innerText = "ERROR";
+                resStatus.className = "status-badge status-5xx";
+                resBody.innerText = err.toString();
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
